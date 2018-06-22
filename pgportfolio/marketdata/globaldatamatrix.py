@@ -70,6 +70,9 @@ class HistoryManager:
 
         time_index = pd.to_datetime(list(range(start, end+1, period)),unit='s')
         panel = pd.Panel(items=features, major_axis=coins, minor_axis=time_index, dtype=np.float32)
+        if "sentiment" in features:
+            panel["sentiment"] = get_sentiment_data(start, end, period)
+            del features["sentiment"]
 
         connection = sqlite3.connect(DATABASE_DIR)
         try:
