@@ -157,6 +157,7 @@ import AreaChart from "../components/AreaChart";
 import MultiLineChart from "../components/MultiLineChart";
 import GridTable from "../components/GridTable";
 import Candlestick from "../components/Candlestick";
+import CandlestickETH from "../components/CandlestickETH";
 import http from "../service";
 import moment from "moment";
 // const tableData = [{
@@ -274,7 +275,8 @@ export default {
     AreaChart,
     MultiLineChart,
     GridTable,
-    Candlestick
+    Candlestick,
+    CandlestickETH
   }
 };
 </script>
