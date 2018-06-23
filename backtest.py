@@ -3,15 +3,19 @@ from mercurius.data.candlereader import CandleReader
 from pgportfolio.learn.nnagent import NNAgent
 from pgportfolio.tools.configprocess import load_config
 from pgportfolio.marketdata.globaldatamatrix import get_sentiment_data
+from datetime import datetime, timedelta
 import numpy as np
 import xarray
 import pandas as pd
 
+
 def assets2symbols(assets):
     return [asset+"/BTC" for asset in assets]
 
-def backtest(start, end, agent_index):
+
+def backtest(start, end, agent_index = 1,location = "train_package/"):
     """
+    :param location: location of given model
     :param start: start date of backtest
     :param end: end date of backtest
     :param agent_index: index of agent
@@ -20,7 +24,7 @@ def backtest(start, end, agent_index):
     """
     config = load_config(agent_index)
     assets = ['ETH', 'LTC', 'XRP', 'ETC', 'DASH', 'XMR', 'XEM', 'FCT', 'GNT', 'ZEC']
-    agent = NNAgent(config, "train_package/"+str(agent_index)+"/netfile")
+    agent = NNAgent(config, location+str(agent_index)+"/netfile")
     reader = CandleReader(symbols=assets2symbols(assets), start=start, end=end, timeframe="30m")
     global_data = reader.get_data()
     global_sentiment = get_sentiment_data(assets2symbols(assets), start, end, "30min")
@@ -36,6 +40,7 @@ def backtest(start, end, agent_index):
     last_w[0] = 1
     portfolio_changes_history = {}
     portfolio_weights_history = {}
+    print(global_data)
     for i in range(global_steps):
         input_window = global_data[:,:,i:i+window_size]
         y = global_data[0, :, i+1]/global_data[0, :, i]
@@ -52,7 +57,10 @@ def backtest(start, end, agent_index):
 
 
 if __name__ == "__main__":
-    results = backtest("2018-06-01 00:00:00", "2018-06-05 00:00:00", 1)
+    results = backtest("2018-06-01 00:10:00", "2018-06-05 01:00:00")
+    print(datetime.today().timestamp())
+    print((datetime.today() - timedelta(days = 1)).timestamp())
+
     print(results)
 
 
