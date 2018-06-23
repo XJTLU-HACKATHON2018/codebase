@@ -80,7 +80,7 @@ def get_twitter_sentiment(assets, start_date, end_date):
 		date_sentiment_list = []
 		date_raw_data = []
 		for date in dates:
-			tweets = get_tweets(query=asset, count=100, since='2018-01-01', until=date)
+			tweets = get_tweets(query=asset, count=100, since='2016-01-01', until=date)
 			file = open('raw.json', "a+")
 			json.dump(tweets, file)
 			file.close()
