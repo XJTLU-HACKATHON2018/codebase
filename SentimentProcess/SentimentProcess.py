@@ -9,23 +9,24 @@ import threading
 from langdetect import detect
 
 def printTweet(descr, t):
-    print(descr)
-    print("Username: %s" % t.username)
-    print("Retweets: %d" % t.retweets)
-    print("Text: %s" % t.text)
-    print("Mentions: %s" % t.mentions)
-    print("Time: %s\n" % str(t.date))
+	print(descr)
+	print("Username: %s" % t.username)
+	print("Retweets: %d" % t.retweets)
+	print("Text: %s" % t.text)
+	print("Mentions: %s" % t.mentions)
+	print("Time: %s\n" % str(t.date))
 
 class myThread (threading.Thread):
-    def __init__(self,  name, start_date, end_date):
-        threading.Thread.__init__(self)
-        self.name = name
-        self.start_date = start_date
-        self.end_date = end_date
+	def __init__(self,  name, start_date, end_date):
+		threading.Thread.__init__(self)
+		self.name = name
+		self.start_date = start_date
+		self.end_date = end_date
 
-    def run(self):
-        print("Starting Thread："+self.name)
-        save_data(start_date=self.start_date, end_date=self.end_date)
+	def run(self):
+		print("Starting Thread："+self.name)
+		save_data(start_date=self.start_date, end_date=self.end_date)
+		print("end Thread: "+self.name)
 
 def clean_tweet(tweet):
 	'''
@@ -51,17 +52,22 @@ def get_tweets(query, count, since, until):
 		tweetCriteria = got.manager.TweetCriteria().setQuerySearch(query).setSince(since).setUntil(until).setMaxTweets(count)
 		tweetss = got.manager.TweetManager.getTweets(tweetCriteria)
 		for tweet in tweetss:
-			if(detect(tweet.text) == 'en'):
-				parsed_tweet = {}
-				parsed_tweet['text'] = tweet.text
-				parsed_tweet['time'] = tweet.date.strftime("%Y-%m-%d")
-				parsed_tweet['sentiment'] = get_tweet_sentiment(tweet.text)
-				if tweet.retweets > 0:
-					if parsed_tweet not in tweets:
+			try:
+				if (detect(tweet.text) == 'en'):
+					parsed_tweet = {}
+					parsed_tweet['text'] = tweet.text
+					parsed_tweet['time'] = tweet.date.strftime("%Y-%m-%d")
+					parsed_tweet['sentiment'] = get_tweet_sentiment(tweet.text)
+					if tweet.retweets > 0:
+						if parsed_tweet not in tweets:
+							tweets.append(parsed_tweet)
+					else:
 						tweets.append(parsed_tweet)
 				else:
-					tweets.append(parsed_tweet)
-			else: pass
+					pass
+			except Exception as e:
+				print("Empty Twitter text")
+
 	print(str(len(tweets))+"Successful")
 	return tweets
 
@@ -97,33 +103,34 @@ def get_twitter_sentiment(assets, start_date, end_date):
 
 def save_data(start_date, end_date):
 	assets = ['$ETH', '$LTC', '$XRP', '$ETC', '$DASH', '$XMR', '$XEM', '$FCT', '$GNT', '$ZEC', '$BTC']
-	save1, save2 = get_twitter_sentiment(assets=assets, start_date=sys.argv[1], end_date=sys.argv[2])
-	save1.to_csv(sys.argv[1] + "--" + sys.argv[2] + '.csv', index=True, sep=',')
+	save1, save2 = get_twitter_sentiment(assets=assets, start_date=start_date, end_date=end_date)
+	save1.to_csv(start_date + "--" + end_date + '.csv', index=True, sep=',')
 
-	file = open(sys.argv[1] + "--" + sys.argv[2] + '-raw.json', "w+")
+	file = open(start_date + "--" + end_date + '-raw.json', "w+")
 	json.dump(save2, file)
 	file.close()
 
 def main():
-    start_date = sys.argv[1]
-    end_date = sys.argv[2]
-    startTS = TimeT.trans_to_timestamp(start_date)
-    endTS = TimeT.trans_to_timestamp(end_date)
-    period = int((endTS-startTS)/8)
-    n = 0
-    threads = []
-    while (startTS <= endTS):
-        end = startTS + period
-        thread = myThread(str(n), start_date=startTS, end_date=end)
-        threads.append(thread)
-        startTS = startTS + period
-        n = n+1
+	start_date = sys.argv[1]
+	end_date = sys.argv[2]
+	startTS = TimeT.trans_to_timestamp(start_date)
+	endTS = TimeT.trans_to_timestamp(end_date)
+	period = int((endTS-startTS)/8)
+	n = 0
+	threads = []
+	while (startTS < endTS):
+		end = startTS + period
+		thread = myThread(str(n), start_date=TimeT.trans_to_Date(startTS), end_date=TimeT.trans_to_Date(end))
+		threads.append(thread)
+		print(TimeT.trans_to_Date(end))
+		startTS = startTS + period
+		n = n+1
 
-    for thread in threads:
-        thread.start()
+	for thread in threads:
+		thread.start()
 
-    for t in threads:
-        t.join()
+	for t in threads:
+		t.join()
 
 
 if __name__ == '__main__':
