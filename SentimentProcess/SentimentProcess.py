@@ -51,17 +51,22 @@ def get_tweets(query, count, since, until):
 		tweetCriteria = got.manager.TweetCriteria().setQuerySearch(query).setSince(since).setUntil(until).setMaxTweets(count)
 		tweetss = got.manager.TweetManager.getTweets(tweetCriteria)
 		for tweet in tweetss:
-			if(detect(tweet.text) == 'en'):
-				parsed_tweet = {}
-				parsed_tweet['text'] = tweet.text
-				parsed_tweet['time'] = tweet.date.strftime("%Y-%m-%d")
-				parsed_tweet['sentiment'] = get_tweet_sentiment(tweet.text)
-				if tweet.retweets > 0:
-					if parsed_tweet not in tweets:
+			try:
+				if (detect(tweet.text) == 'en'):
+					parsed_tweet = {}
+					parsed_tweet['text'] = tweet.text
+					parsed_tweet['time'] = tweet.date.strftime("%Y-%m-%d")
+					parsed_tweet['sentiment'] = get_tweet_sentiment(tweet.text)
+					if tweet.retweets > 0:
+						if parsed_tweet not in tweets:
+							tweets.append(parsed_tweet)
+					else:
 						tweets.append(parsed_tweet)
 				else:
-					tweets.append(parsed_tweet)
-			else: pass
+					pass
+			except Exception as e:
+				pass
+
 	print(str(len(tweets))+"Successful")
 	return tweets
 
@@ -105,25 +110,26 @@ def save_data(start_date, end_date):
 	file.close()
 
 def main():
-    start_date = sys.argv[1]
-    end_date = sys.argv[2]
-    startTS = TimeT.trans_to_timestamp(start_date)
-    endTS = TimeT.trans_to_timestamp(end_date)
-    period = int((endTS-startTS)/8)
-    n = 0
-    threads = []
-    while (startTS <= endTS):
-        end = startTS + period
-        thread = myThread(str(n), start_date=startTS, end_date=end)
-        threads.append(thread)
-        startTS = startTS + period
-        n = n+1
+	start_date = sys.argv[1]
+	end_date = sys.argv[2]
+	startTS = TimeT.trans_to_timestamp(start_date)
+	endTS = TimeT.trans_to_timestamp(end_date)
+	period = int((endTS-startTS)/8)
+	n = 0
+	threads = []
+	while (startTS < endTS):
+		end = startTS + period
+		thread = myThread(str(n), start_date=TimeT.trans_to_Date(startTS), end_date=TimeT.trans_to_Date(end))
+		threads.append(thread)
+		print(TimeT.trans_to_Date(end))
+		startTS = startTS + period
+		n = n+1
 
-    for thread in threads:
-        thread.start()
+	for thread in threads:
+		thread.start()
 
-    for t in threads:
-        t.join()
+	for t in threads:
+		t.join()
 
 
 if __name__ == '__main__':
