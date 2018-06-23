@@ -9,23 +9,24 @@ import threading
 from langdetect import detect
 
 def printTweet(descr, t):
-    print(descr)
-    print("Username: %s" % t.username)
-    print("Retweets: %d" % t.retweets)
-    print("Text: %s" % t.text)
-    print("Mentions: %s" % t.mentions)
-    print("Time: %s\n" % str(t.date))
+	print(descr)
+	print("Username: %s" % t.username)
+	print("Retweets: %d" % t.retweets)
+	print("Text: %s" % t.text)
+	print("Mentions: %s" % t.mentions)
+	print("Time: %s\n" % str(t.date))
 
 class myThread (threading.Thread):
-    def __init__(self,  name, start_date, end_date):
-        threading.Thread.__init__(self)
-        self.name = name
-        self.start_date = start_date
-        self.end_date = end_date
+	def __init__(self,  name, start_date, end_date):
+		threading.Thread.__init__(self)
+		self.name = name
+		self.start_date = start_date
+		self.end_date = end_date
 
-    def run(self):
-        print("Starting Thread："+self.name)
-        save_data(start_date=self.start_date, end_date=self.end_date)
+	def run(self):
+		print("Starting Thread："+self.name)
+		save_data(start_date=self.start_date, end_date=self.end_date)
+		print("end Thread: "+self.name)
 
 def clean_tweet(tweet):
 	'''
@@ -65,7 +66,7 @@ def get_tweets(query, count, since, until):
 				else:
 					pass
 			except Exception as e:
-				pass
+				print("Empty Twitter text")
 
 	print(str(len(tweets))+"Successful")
 	return tweets
@@ -102,10 +103,10 @@ def get_twitter_sentiment(assets, start_date, end_date):
 
 def save_data(start_date, end_date):
 	assets = ['$ETH', '$LTC', '$XRP', '$ETC', '$DASH', '$XMR', '$XEM', '$FCT', '$GNT', '$ZEC', '$BTC']
-	save1, save2 = get_twitter_sentiment(assets=assets, start_date=sys.argv[1], end_date=sys.argv[2])
-	save1.to_csv(sys.argv[1] + "--" + sys.argv[2] + '.csv', index=True, sep=',')
+	save1, save2 = get_twitter_sentiment(assets=assets, start_date=start_date, end_date=end_date)
+	save1.to_csv(start_date + "--" + end_date + '.csv', index=True, sep=',')
 
-	file = open(sys.argv[1] + "--" + sys.argv[2] + '-raw.json', "w+")
+	file = open(start_date + "--" + end_date + '-raw.json', "w+")
 	json.dump(save2, file)
 	file.close()
 
