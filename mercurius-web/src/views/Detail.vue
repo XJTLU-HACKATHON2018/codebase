@@ -53,7 +53,7 @@
             <el-tab-pane label="ETH/BTC price chart">
               <div class="mutillinechart">
                 <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
-                <candlestick class="echarts"></candlestick>
+                <CandlestickETH class="echarts"></CandlestickETH>
               </div>
             </el-tab-pane>
             <el-tab-pane label="XMR/BTC price chart">
