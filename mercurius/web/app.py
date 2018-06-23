@@ -5,7 +5,7 @@ from __future__ import division
 from flask import Flask, request, json
 from mercurius.data import candlereader
 import numpy as np
-#import ccxt
+import ccxt
 
 app = Flask(__name__)
 
@@ -41,6 +41,17 @@ def get_coin_price(coin):
         print(type(df))
         return 'PASS'
     return 'FAIL'
+
+@app.route('/balances', methods=['GET'])
+def get_balance(exchange="binance"):
+    assets = ['BTC', 'VEN', 'BNB', 'USDT']
+    exchange = getattr(ccxt, exchange)({'apiKey': '8f8tN9PmXCQSfU4RpBvE0Y8vQioQkbH2vUkVC6cS0jTpSplGufBxSmAOpkQokYt4', 'secret': '9w0aoElX1iRrhOOptnMiYRei57sBAZQmMZKQpwsp3IeYqBTP7LpsRJhhFvO1WWFv'})
+    balances = exchange.fetchBalance()
+    res = {}
+    for i in assets:
+        res[i] = balances[i]
+    return json.jsonify(res)
+
 
 def main():
     app.run(host='0.0.0.0', debug=True)
