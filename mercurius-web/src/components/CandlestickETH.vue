@@ -4,7 +4,7 @@
 * @Created: 2018-04-22 02:34
 */
 <template>
-  <chart :initOptions="chartOptions" ref="chart" auto-resize></chart>
+  <chart :options="chartOptions" ref="chart" auto-resize></chart>
 </template>
 
 <script>
