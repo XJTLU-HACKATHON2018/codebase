@@ -2,15 +2,17 @@ from __future__ import absolute_import
 from __future__ import print_function
 from __future__ import division
 
-import datetime as dt
-
 from flask import Flask, request, json
+from flask_cors import CORS, cross_origin
 from mercurius.data import candlereader
 from backtest import backtest
+from datetime import datetime, timedelta
 import numpy as np
 import ccxt
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 
 @app.route('/uploadAlgo', methods=['POST', 'GET'])
@@ -22,12 +24,15 @@ def run_algo():
         end_time = data["end_time"]
         timeframe = data["timeframe"]
         symbols = data["symbols"]
-        da = candlereader.CandleReader(symbols, start_time, end_time, timeframe, exchange).get_data()
+        da = candlereader.CandleReader(
+            symbols, start_time, end_time, timeframe, exchange).get_data()
         close_price = da.sel(feature='close')
         # algo.run()
         response = {}
         response['close'] = close_price.data.tolist()
-        response['date'] = [x / 1e6 for x in da['openTime'].values.astype(np.int64)]
+
+        response['date'] = [
+            x / 1e6 for x in da['openTime'].values.astype(np.int64)]
         # print(response['date'])
         # print(type(response['date']))
         print('PASS')
@@ -36,16 +41,41 @@ def run_algo():
     return 'FAIL'
 
 
-@app.route('/coin/<symbol>', methods=['POST', 'GET'])
-def get_coin_price(coin):
+@app.route('/coin', methods=['POST', 'GET'])
+@cross_origin()
+def get_coin_price(exchange="binance"):
     """default poloniex"""
-    if request.method == "POST":
-        symbol = str(coin).upper() + "/BTC"
-        df = candlereader.CandleReader(symbol).get_data().to_pandas()
-        print(df)
-        print(type(df))
-        return 'PASS'
-    return 'FAIL'
+    res = {}
+    symbol = request.args.get('symbol', 'eth')
+    start = request.args.get('start', (datetime.utcnow(
+    ) - timedelta(minutes=120)).strftime("%Y-%m-%d %H:%M:%S"))
+    end = request.args.get(
+        'end', (datetime.utcnow()).strftime("%Y-%m-%d %H:%M:%S"))
+    print(start)
+    print(end)
+    tf = request.args.get('tf', '15m')  # timeframe
+    exchange = getattr(ccxt, exchange)({'apiKey': '8f8tN9PmXCQSfU4RpBvE0Y8vQioQkbH2vUkVC6cS0jTpSplGufBxSmAOpkQokYt4',
+                                        'secret': '9w0aoElX1iRrhOOptnMiYRei57sBAZQmMZKQpwsp3IeYqBTP7LpsRJhhFvO1WWFv',
+                                        'enableRateLimit': True, 'options': {'adjustForTimeDifference': True}})
+    pair = str(symbol).upper() + "/BTC"
+    start = exchange.parse8601(start)
+    end = exchange.parse8601(end)
+    num_candles = int((end - start) / exchange.parse_timeframe(tf) / 1e3)
+    data = exchange.fetch_ohlcv(pair, tf, start, num_candles)
+    time_list = []
+    ohlc = []
+    volume = []
+    for i in data:
+        time_list.append((datetime.utcfromtimestamp(int(i[0] / 1e3))).strftime('%Y-%m-%d %H:%M:%S'))
+        ohlc.append(i[1:5])
+        volume.append(i[5])
+    app.logger.info(data)
+
+    res['time'] = time_list
+    res['ohlc'] = ohlc
+    res['vol'] = volume
+
+    return json.jsonify(res)
 
 
 @app.route('/balances', methods=['GET'])
@@ -62,7 +92,9 @@ def get_balance(exchange="binance"):
 
 @app.route('/orders', methods=['GET'])
 def get_orders(exchange="binance"):
-    pairs = ['ETH/BTC', 'VEN/BTC', 'BNB/BTC', 'BTC/USDT']  # we could include this as input parameter later
+    # we could include this as input parameter later
+    pairs = ['ETH/BTC', 'VEN/BTC', 'BNB/BTC', 'BTC/USDT']
+
     exchange = getattr(ccxt, exchange)({'apiKey': '8f8tN9PmXCQSfU4RpBvE0Y8vQioQkbH2vUkVC6cS0jTpSplGufBxSmAOpkQokYt4',
                                         'secret': '9w0aoElX1iRrhOOptnMiYRei57sBAZQmMZKQpwsp3IeYqBTP7LpsRJhhFvO1WWFv'})
     res = {}
@@ -71,19 +103,25 @@ def get_orders(exchange="binance"):
     return json.jsonify(res)
 
 
-### Illness of network
+# NOTE: For now, (Buggy) need a time stamp for a start exactly starting from a day
 @app.route('/backtest/<starttimestamp>/<endtimestamp>', methods=['GET'])
-
-def get_backtest(starttimestamp, endtimestamp):
+def get_back_test(starttimestamp, endtimestamp):
     res = backtest(
-        dt.datetime.fromtimestamp(int(starttimestamp)).strftime("%Y-%m-%d %H:%M:%S"),
-        dt.datetime.fromtimestamp(int(endtimestamp)).strftime("%Y-%m-%d %H:%M:%S"),
+        datetime.fromtimestamp(int(starttimestamp)).strftime("%Y-%m-%d %H:%M:%S"),
+        datetime.fromtimestamp(int(endtimestamp)).strftime("%Y-%m-%d %H:%M:%S"),
         location="../../train_package/"
     )
-    res = backtest("2018-06-02 00:00:00", "2018-06-06 00:00:00", location="../../train_package/")
+    # res = backtest("2018-06-02 00:00:00", "2018-06-06 00:00:00", location="../../train_package/")
+    time_values = res.get("portfolio_changes_history").keys().tolist()
+    rate_values = [value for value in generator(res.get("portfolio_changes_history").values)]
+    return json.jsonify({"xaxis": time_values, "data": rate_values})
 
-    values = res.get("portfolio_changes_history").tolist()
-    return json.jsonify(values)
+
+def generator(list):
+    res = 1
+    for i in list:
+        yield i
+        res *= i
 
 
 def main():
