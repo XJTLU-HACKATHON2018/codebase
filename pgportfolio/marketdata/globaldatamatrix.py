@@ -11,6 +11,10 @@ import sqlite3
 from datetime import datetime
 import logging
 
+def get_sentiment_data(assets, start, end, preiod):
+    datetime = pd.date_range(start=start, end=end, freq="30min")
+    df = pd.DataFrame(np.random.randn(len(datetime), len(assets)), index=datetime, columns=assets, dtype=np.float32)
+    return df
 
 class HistoryManager:
     # if offline ,the coin_list could be None
@@ -55,9 +59,9 @@ class HistoryManager:
         """
         start = int(start - (start%period))
         end = int(end - (end%period))
-        coins = self.select_coins(start=end - self.__volume_forward - self.__volume_average_days * DAY,
-                                  end=end-self.__volume_forward)
-        self.__coins = coins
+        # coins = self.select_coins(start=end - self.__volume_forward - self.__volume_average_days * DAY,
+        #                          end=end-self.__volume_forward)
+        coins = ['ETH', 'LTC', 'XRP', 'ETC', 'DASH', 'XMR', 'XEM', 'FCT', 'GNT', 'ZEC']
         for coin in coins:
             self.update_data(start, end, coin)
 
@@ -70,9 +74,6 @@ class HistoryManager:
 
         time_index = pd.to_datetime(list(range(start, end+1, period)),unit='s')
         panel = pd.Panel(items=features, major_axis=coins, minor_axis=time_index, dtype=np.float32)
-        if "sentiment" in features:
-            panel["sentiment"] = get_sentiment_data(start, end, period)
-            del features["sentiment"]
 
         connection = sqlite3.connect(DATABASE_DIR)
         try:
@@ -110,6 +111,8 @@ class HistoryManager:
                                 " WHERE date_norm>={start} and date_norm<={end} and coin=\"{coin}\""
                                 " GROUP BY date_norm".format(
                                     period=period,start=start,end=end,coin=coin))
+                    elif feature == "sentiment":
+                        continue
                     else:
                         msg = ("The feature %s is not supported" % feature)
                         logging.error(msg)
@@ -122,6 +125,9 @@ class HistoryManager:
         finally:
             connection.commit()
             connection.close()
+
+        if "sentiment" in features:
+            panel["sentiment"] = get_sentiment_data(coins, start*1e9, end*1e9, period).T
         return panel
 
     # select top coin_number of coins by volume from start to end

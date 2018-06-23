@@ -69,6 +69,8 @@ def fill_layers_default(layers):
             set_missing(layer, "weight_decay", 0.0)
         elif layer["type"] == "DropOut":
             pass
+        elif layer["type"] == "BN":
+            pass
         else:
             raise ValueError("layer name {} not supported".format(layer["type"]))
 
