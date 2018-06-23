@@ -3,13 +3,15 @@ from __future__ import print_function
 from __future__ import division
 
 from flask import Flask, request, json
+from flask_cors import CORS, cross_origin
 from mercurius.data import candlereader
 from datetime import datetime, timedelta
 import numpy as np
 import ccxt
 
 app = Flask(__name__)
-
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route('/uploadAlgo', methods=['POST', 'GET'])
 def run_algo():
@@ -37,6 +39,7 @@ def run_algo():
 
 
 @app.route('/coin', methods=['POST', 'GET'])
+@cross_origin
 def get_coin_price(exchange="binance"):
     """default poloniex"""
     res = {}
