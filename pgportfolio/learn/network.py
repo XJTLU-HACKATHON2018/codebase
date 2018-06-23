@@ -44,7 +44,13 @@ class CNN(NeuralNetWork):
     def _build_network(self, layers):
         network = tf.transpose(self.input_tensor, [0, 2, 3, 1])
         # [batch, assets, window, features]
-        network = network / network[:, :, -1, 0, None, None]
+        sentiment = True
+        if sentiment:
+            prices = network[:, :, :, :-1] / network[:, :, -1, 0, None, None]
+            sentiment = network[:, :, :, -1, None]
+            network = tf.concat([prices, sentiment], axis=3)
+        else:
+            network = network / network[:, :, -1, 0, None, None]
         for layer_number, layer in enumerate(layers):
             if layer["type"] == "DenseLayer":
                 network = tflearn.layers.core.fully_connected(network,
@@ -80,6 +86,8 @@ class CNN(NeuralNetWork):
                 network = tflearn.layers.conv.avg_pool_2d(network, layer["strides"])
             elif layer["type"] == "LocalResponseNormalization":
                 network = tflearn.layers.normalization.local_response_normalization(network)
+            elif layer["type"] == "BN":
+                network = tflearn.layers.batch_normalization(network)
             elif layer["type"] == "EIIE_Output":
                 width = network.get_shape()[2]
                 network = tflearn.layers.conv_2d(network, 1, [1, width], padding="valid",
