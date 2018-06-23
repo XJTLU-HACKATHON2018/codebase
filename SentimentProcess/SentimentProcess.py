@@ -6,6 +6,7 @@ import pandas as pd
 import TimeT
 import json
 import threading
+import time
 from langdetect import detect
 
 def printTweet(descr, t):
@@ -49,8 +50,13 @@ def get_tweets(query, count, since, until):
 	# empty list to store parsed tweets
 	tweets = []
 	while(len(tweets)<count):
-		tweetCriteria = got.manager.TweetCriteria().setQuerySearch(query).setSince(since).setUntil(until).setMaxTweets(count)
-		tweetss = got.manager.TweetManager.getTweets(tweetCriteria)
+		tweetss = None
+		while(tweetss == None):
+			try:
+				tweetCriteria = got.manager.TweetCriteria().setQuerySearch(query).setSince(since).setUntil(until).setMaxTweets(count)
+				tweetss = got.manager.TweetManager.getTweets(tweetCriteria)
+			except Exception as e:
+				pass
 		for tweet in tweetss:
 			try:
 				if (detect(tweet.text) == 'en'):
@@ -86,7 +92,7 @@ def get_twitter_sentiment(assets, start_date, end_date):
 		date_sentiment_list = []
 		date_raw_data = []
 		for date in dates:
-			tweets = get_tweets(query=asset, count=100, since='2016-01-01', until=date)
+			tweets = get_tweets(query=asset, count=100, since='2015-01-01', until=date)
 			file = open('raw.json', "a+")
 			json.dump(tweets, file)
 			file.close()
@@ -128,6 +134,7 @@ def main():
 
 	for thread in threads:
 		thread.start()
+		time.sleep(2)
 
 	for t in threads:
 		t.join()

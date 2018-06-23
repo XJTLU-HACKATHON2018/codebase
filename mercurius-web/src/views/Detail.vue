@@ -48,6 +48,30 @@
             <el-tab-pane label="ETH/BTC price chart">
               <div class="mutillinechart">
                 <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <CandlestickETH class="echarts"></CandlestickETH>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="XMR/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <candlestick class="echarts"></candlestick>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="STR/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <candlestick class="echarts"></candlestick>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="OMG/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <candlestick class="echarts"></candlestick>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="LST/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
                 <candlestick class="echarts"></candlestick>
               </div>
             </el-tab-pane>
@@ -128,6 +152,7 @@ import AreaChart from "../components/AreaChart";
 import MultiLineChart from "../components/MultiLineChart";
 import GridTable from "../components/GridTable";
 import Candlestick from "../components/Candlestick";
+import CandlestickETH from "../components/CandlestickETH";
 import http from "../service";
 import moment from "moment";
 // const tableData = [{
@@ -245,7 +270,8 @@ export default {
     AreaChart,
     MultiLineChart,
     GridTable,
-    Candlestick
+    Candlestick,
+    CandlestickETH
   }
 };
 </script>
