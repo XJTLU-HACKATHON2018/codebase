@@ -52,6 +52,15 @@ def get_balance(exchange="binance"):
         res[i] = balances[i]
     return json.jsonify(res)
 
+@app.route('/orders', methods=['GET'])
+def get_orders(exchange="binance"):
+    pairs = ['ETH/BTC', 'VEN/BTC', 'BNB/BTC', 'BTC/USDT'] #we could include this as input parameter later
+    exchange = getattr(ccxt, exchange)({'apiKey': '8f8tN9PmXCQSfU4RpBvE0Y8vQioQkbH2vUkVC6cS0jTpSplGufBxSmAOpkQokYt4', 'secret': '9w0aoElX1iRrhOOptnMiYRei57sBAZQmMZKQpwsp3IeYqBTP7LpsRJhhFvO1WWFv'})
+    res = {}
+    for i in pairs:
+        res[i] = exchange.fetchOrders(i)
+    return json.jsonify(res)
+
 
 def main():
     app.run(host='0.0.0.0', debug=True)
