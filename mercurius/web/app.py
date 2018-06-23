@@ -75,6 +75,7 @@ def get_coin_price(exchange="binance"):
 
 
 @app.route('/balances', methods=['GET'])
+@cross_origin()
 def get_balance(exchange="binance"):
     assets = ['BTC', 'VEN', 'BNB', 'USDT']
     exchange = getattr(ccxt, exchange)({'apiKey': '8f8tN9PmXCQSfU4RpBvE0Y8vQioQkbH2vUkVC6cS0jTpSplGufBxSmAOpkQokYt4',
@@ -87,6 +88,7 @@ def get_balance(exchange="binance"):
 
 
 @app.route('/orders', methods=['GET'])
+@cross_origin()
 def get_orders(exchange="binance"):
     # we could include this as input parameter later
     pairs = ['ETH/BTC', 'VEN/BTC', 'BNB/BTC', 'BTC/USDT']
