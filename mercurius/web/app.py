@@ -39,7 +39,7 @@ def run_algo():
 
 
 @app.route('/coin', methods=['POST', 'GET'])
-@cross_origin
+@cross_origin()
 def get_coin_price(exchange="binance"):
     """default poloniex"""
     res = {}
