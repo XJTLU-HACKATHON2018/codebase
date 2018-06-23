@@ -3012,7 +3012,7 @@ export default {
           }
         ],
         legend: {
-          data: ['日K', 'MA5', 'MA10', 'MA20', 'MA30'],
+          data: ['ETH', 'MA5', 'MA10', 'MA20', 'MA30'],
           inactiveColor: '#777',
           textStyle: {
             color: '#fff'
