@@ -8,7 +8,6 @@ import numpy as np
 import xarray as xr
 #import sqlalchemy
 from datetime import datetime, timedelta
-from mercurius.strategy import olmar
 
 
 class CandleReader(object):
@@ -76,6 +75,7 @@ class CandleReader(object):
         #df.to_sql('candlestick', engine, if_exists='replace', index=False, chunksize=10000)
 
 if __name__ == "__main__":
+    from mercurius.strategy import olmar
     exchange = ccxt.poloniex()
     symbols = ['ETH/BTC', 'ETC/BTC']
     #symbol = 'ETH/BTC'

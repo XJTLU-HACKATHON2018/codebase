@@ -44,11 +44,11 @@ class CNN(NeuralNetWork):
     def _build_network(self, layers):
         network = tf.transpose(self.input_tensor, [0, 2, 3, 1])
         # [batch, assets, window, features]
-        sentiment = True
-        if sentiment:
+        allow_sentiment = True
+        if allow_sentiment:
             prices = network[:, :, :, :-1] / network[:, :, -1, 0, None, None]
             sentiment = network[:, :, :, -1, None]
-            network = tf.concat([prices, sentiment], axis=3)
+            network = prices
         else:
             network = network / network[:, :, -1, 0, None, None]
         for layer_number, layer in enumerate(layers):
@@ -63,6 +63,13 @@ class CNN(NeuralNetWork):
                 network = tflearn.layers.core.dropout(network, layer["keep_probability"])
             elif layer["type"] == "EIIE_Dense":
                 width = network.get_shape()[2]
+                features = network.get_shape()[3]
+                height = network.get_shape()[1]
+                if allow_sentiment:
+                    zeros = tf.zeros_like(network[:, :, -1, None, 1:])
+                    sentiment_data = tf.concat([tf.reduce_mean(sentiment, axis=2, keep_dims=True),
+                                            zeros], axis=3)
+                    network = tf.concat([network, sentiment_data], axis=2)
                 network = tflearn.layers.conv_2d(network, int(layer["filter_number"]),
                                                  [1, width],
                                                  [1, 1],
