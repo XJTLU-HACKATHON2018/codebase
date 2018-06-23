@@ -45,9 +45,11 @@ def get_coin_price(exchange="binance"):
     )-timedelta(minutes=120)).strftime("%Y-%m-%d %H:%M:%S"))
     end = request.args.get(
         'end', (datetime.utcnow()).strftime("%Y-%m-%d %H:%M:%S"))
+    print(start)
+    print(end)
     tf = request.args.get('tf', '15m')  # timeframe
     exchange = getattr(ccxt, exchange)({'apiKey': '8f8tN9PmXCQSfU4RpBvE0Y8vQioQkbH2vUkVC6cS0jTpSplGufBxSmAOpkQokYt4',
-                                        'secret': '9w0aoElX1iRrhOOptnMiYRei57sBAZQmMZKQpwsp3IeYqBTP7LpsRJhhFvO1WWFv', 'enableRateLimit': True, 'options': {'adjustForTimeDifferencce': True}})
+                                        'secret': '9w0aoElX1iRrhOOptnMiYRei57sBAZQmMZKQpwsp3IeYqBTP7LpsRJhhFvO1WWFv', 'enableRateLimit': True, 'options': {'adjustForTimeDifference': True}})
     pair = str(symbol).upper()+"/BTC"
     start = exchange.parse8601(start)
     end = exchange.parse8601(end)
