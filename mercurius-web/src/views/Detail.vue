@@ -56,6 +56,30 @@
                 <candlestick class="echarts"></candlestick>
               </div>
             </el-tab-pane>
+            <el-tab-pane label="XMR/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <candlestick class="echarts"></candlestick>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="STR/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <candlestick class="echarts"></candlestick>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="OMG/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <candlestick class="echarts"></candlestick>
+              </div>
+            </el-tab-pane>
+            <el-tab-pane label="LST/BTC price chart">
+              <div class="mutillinechart">
+                <!-- <multi-line-chart class="echarts"></multi-line-chart> -->
+                <candlestick class="echarts"></candlestick>
+              </div>
+            </el-tab-pane>
           </el-tabs>
         </el-col>
       </el-row>
