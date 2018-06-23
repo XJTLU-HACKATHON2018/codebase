@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  div(class="container")
+    h1 XJTLU pnp
+
+    div(class="row")
+      div(class="col-sm-9")
+        // The dom for first EChart
+        div(class="card", id="MyECharts", style="height: 400px") hwejo
+
+      div(class="col-sm-3")
+        // Redraw the plot on click
+        button(type="button", class="btn btn-success", onclick="redraw()") Refresh
+        p
+          | Check <a href="/dummydata1">/dummydata1</a> for the random data
+          | added to the plot.
+
+    // Import Echarts
+    script(src='http://echarts.baidu.com/build/dist/echarts.js')
+
+    // Initial drawing and function for redrawing
+    script(src="/javascripts/example1.js")
+
+
+
+
+

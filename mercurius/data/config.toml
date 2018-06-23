@@ -1,0 +1,13 @@
+[train]
+
+paris = [
+"BTC",
+"ETH",
+"USDT"
+]
+
+market = "poloniex"
+
+[test]
+
+market = "binance"
