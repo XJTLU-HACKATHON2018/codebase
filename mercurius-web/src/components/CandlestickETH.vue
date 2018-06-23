@@ -4,7 +4,7 @@
 * @Created: 2018-04-22 02:34
 */
 <template>
-  <chart :options="chartOptions" ref="chart" auto-resize></chart>
+  <chart :initOptions="chartOptions" ref="chart" auto-resize></chart>
 </template>
 
 <script>
@@ -2965,7 +2965,7 @@ var data = rawData.map(function(item) {
 });
 
 export default {
-  name: "Candlestick",
+  name: "CandlestickETH",
   computed: {},
   data() {
     return {
