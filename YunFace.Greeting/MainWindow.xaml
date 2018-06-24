@@ -1,0 +1,75 @@
+﻿<Window x:Class="YunFace.Greeting.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:YunFace.Greeting"
+        mc:Ignorable="d" Height="702" Width="1000" WindowStartupLocation="CenterScreen" WindowStyle="None" Icon="bitbug_favicon.ico" ResizeMode="CanMinimize" WindowState="Maximized" Closing="Window_Closing">
+    <Window.Resources>
+        <Storyboard x:Key="TextFlashing" RepeatBehavior="Forever">
+            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextElement.Foreground).(GradientBrush.GradientStops)[0].(GradientStop.Color)" Storyboard.TargetName="greetingWords">
+                <EasingColorKeyFrame KeyTime="0" Value="#FFFB7505"/>
+                <EasingColorKeyFrame KeyTime="0:0:1.5" Value="sc#1, 0.9646863, 0.177888423, 0.001517635"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.4" Value="sc#1, 0.9646863, 0.177888423, 0.001517635"/>
+                <EasingColorKeyFrame KeyTime="0:0:2.5" Value="#FFFB7505"/>
+            </ColorAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="greetingWords">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.4" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:2.5" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="ShadowSliding">
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)" Storyboard.TargetName="identityCardShadow">
+                <EasingThicknessKeyFrame KeyTime="0" Value="300,133,0,0"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:0.3" Value="100,133,0,0"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:1" Value="100,133,0,0"/>
+                <EasingThicknessKeyFrame KeyTime="0:0:1.3" Value="-326,133,0,0"/>
+            </ThicknessAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="identityCardShadow">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1" Value="1"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="0"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Window.Resources>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded" SourceName="greetingWords">
+            <BeginStoryboard x:Name="TextFlashing_BeginStoryboard" Storyboard="{StaticResource TextFlashing}"/>
+        </EventTrigger>
+    </Window.Triggers>
+    <Window.Background>
+        <ImageBrush ImageSource="images/background.jpg"/>
+    </Window.Background>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Image x:Name="logo" Source="images/logo.png" MouseDown="logoBox_MouseDown" Margin="20,20,20,0" Height="80" Grid.Column="0" VerticalAlignment="Top" Cursor="Hand" d:IsLocked="True" />
+        <ListBox x:Name="identifyingHistories" Margin="20,130,20,20" Background="{x:Null}" Grid.Column="0" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="False">
+            <local:IdentityCard/>
+            <local:IdentityCard/>
+            <local:IdentityCard/>
+            <local:IdentityCard/>
+            <local:IdentityCard/>
+        </ListBox>
+        <MediaElement x:Name="adsBox" Margin="20,130,20,20" Grid.Column="0" VerticalAlignment="Bottom" MediaEnded="adsBox_MediaEnded"/>
+        <Border BorderThickness="1" Grid.Column="1" Margin="20,20,20,220" BorderBrush="#CCCCCCCC" ClipToBounds="True">
+            <Image x:Name="videoBox" ClipToBounds="True" Margin="2"/>
+        </Border>
+        <Border BorderThickness="1" Grid.Column="1" Margin="20,0,20,20" Background="#9904073C" Height="180" VerticalAlignment="Bottom" d:IsLocked="True"/>
+        <TextBlock x:Name="greetingWords" TextWrapping="Wrap" Text="" Grid.Column="1" Margin="40,0,40,60" Height="130" VerticalAlignment="Bottom" FontSize="48" TextTrimming="WordEllipsis" Effect="{DynamicResource TextShadow}" d:IsLocked="True" >
+            <TextBlock.Foreground>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFFB7505" Offset="1"/>
+                    <GradientStop Color="Yellow"/>
+                </LinearGradientBrush>
+            </TextBlock.Foreground>
+        </TextBlock>
+        <TextBlock x:Name="currentTime" Grid.Column="1" HorizontalAlignment="Right" Margin="0,0,30,30" TextWrapping="Wrap" Text="2017-08-26 22:22:22" VerticalAlignment="Bottom" TextAlignment="Right" Foreground="#CCFFFFFF" FontSize="16" d:IsLocked="True"/>
+        <local:IdentityCard x:Name="identityCardShadow" Grid.Column="1" Margin="300,133,0,0" VerticalAlignment="Top" Background="#9904073C" HorizontalAlignment="Left" Opacity="0"/>
+    </Grid>
+</Window>

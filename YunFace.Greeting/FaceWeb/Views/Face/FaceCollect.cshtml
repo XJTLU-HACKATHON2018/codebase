@@ -1,0 +1,335 @@
+﻿@{
+    ViewBag.Title = "FaceCollect";
+}
+
+<style type="text/css">
+    .fileinput-button {
+        position: relative;
+        display: inline-block;
+        overflow: hidden;
+    }
+
+        .fileinput-button input {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            opacity: 0;
+            -ms-filter: 'alpha(opacity=0)';
+            font-size: 200px;
+        }
+        .inforow{
+            margin-top:30px;
+        }
+        .center{
+            margin-left:40%;
+            margin-top:30px;
+        }
+        .myleft{
+            margin-left:120px;
+        }
+</style>
+<script src="~/Scripts/exif.js"></script>
+<div class="portlet light bordered" style="box-shadow:none">
+    <div class="portlet-title">
+        <div class="caption">
+            <i class="icon-equalizer font-red-sunglo"></i>
+            <span class="caption-subject font-red-sunglo bold uppercase">身份登记</span>
+        </div>
+        <div class="tools">
+        </div>
+        <div class="hiddenfileds">
+            <input id="posturl" hidden="hidden" name="posturl" value="@ViewBag.posturl">
+        </div>
+    </div>
+
+    <div class="portlet light bordered" id="form_wizard_1" style="box-shadow:none">
+        <div class="portlet-body form">
+            <div class="form-wizard">
+                <div class="form-body">
+                    <ul class="nav nav-pills nav-justified steps">
+                        @*<li>
+                                <a href="#tab2" data-toggle="tab" class="step">
+                                    <span class="number"> 1 </span>
+                                    <span class="desc">
+                                        <i class="fa fa-check"></i> 基础档案
+                                    </span>
+                                </a>
+                            </li>*@
+                        <li>
+                            <a href="#tab1" data-toggle="tab" class="step">
+                                <span class="number"> 脸 </span>
+                                <span class="desc">
+                                    <i class="fa fa-check"></i> 身份采集
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div id="bar" class="progress progress-striped" role="progressbar">
+                        <div class="progress-bar progress-bar-success"> </div>
+                    </div>
+                    <div class="form-actions " style="padding-top:10px;">
+                        <div class="row" style="padding-left:16px;">
+                            <button id="startcapture" class="btn default myleft">开启摄像头</button>
+                            <button id="capturing" class="btn default">拍照</button>
+                            <span class="btn btn-danger fileinput-button">
+                                <span class="glyphicon glyphicon-camera">
+                                </span>
+                                <span id="btntxt">上传照片</span>
+                                <input type="file" accept="image/*" capture="camera" id="upload" />
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <div id="cameraclass" class="col-md-6 " style="height:360px;margin-bottom:4px">
+                            <div id="my_camera"></div>
+                        </div>
+                        <div hidden id="showclass" class="col-md-6 " style="height:360px;margin-bottom:4px">
+                            <video hidden id="video" autoplay="" style='width:480px;height:360px'></video>
+                            <canvas hidden="hidden" id="canvas" width="480" height="360"></canvas>
+                            <input id="imageShow" type="image" src="" value="" style="width:300px;height:330px;margin-left:0px;display:none;">
+                        </div>
+                        <div class="col-md-6 " style="height:360px;margin-bottom:4px">
+                            <div class="row inforow">
+                                <div class="col-md-4 ">
+                                    <label class="control-label ">姓名<span class="required">*</span></label>
+                                </div>
+                                <div class="col-md-8 ">
+                                    <input id="Name" name="Name" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="row inforow">
+                                <div class="col-md-4 ">
+                                    <label class="control-label ">
+                                        电话<span class="required">*</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input name="Tel" type="text" class="form-control" value="">
+                                </div>
+                            </div>
+                            <div class="row inforow">
+                                <div class="col-md-4 ">
+                                    <label class="control-label">
+                                        所属单位<span class="required">*</span>
+                                    </label>
+                                </div>
+                                <div class="col-md-8">
+                                    <input name="Company" type="text"  class="form-control" value="">
+                                </div>
+                            </div>
+                            
+                        </div>
+                       
+                    </div>
+                    <div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="form-actions ">
+                <button class="center" href="javascript:;" id="button-submit">
+                    提交
+                    <i class="fa fa-check"></i>
+                </button>
+                <input name="Id" type="hidden" value="">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var FormWizard = function () {
+        return {
+            //main function to initiate the module
+            init: function () {
+                $('#form_wizard_1').find('#button-submit').show();
+                if (!jQuery().bootstrapWizard) {
+                    return;
+                }
+
+
+
+            }
+        };
+    }();
+    $('#button-submit').click(function () {
+        var datas = {
+            Name: $("[name=Name]").val(),
+            Tel: $("[name=Tel]").val(),
+            Company: $("[name=Company]").val(),
+            face1: $("#imageShow").attr("src").substring(23)//这里处理一下base64编码头，以便base64_decode可以解析
+        }
+        $.post(
+            $("[name=posturl]").val(),
+            datas,
+            function (res) {
+                if (res.success) {
+                    alertapi.success(res.msg);
+                    //location.href = path + "/Identity"
+                } else {
+                    alertapi.error(res.msg);
+                }
+            });
+
+    });
+    jQuery(document).ready(function () {
+        $('#btntxt').html('上传照片');
+    });
+</script>
+<script src="~/Scripts/webcam.js"></script>
+<script src="~/Scripts/webcam.min.js"></script>
+<script type="text/javascript">
+    //全局路径
+    var path = apiHost;
+    var compressWidth = 500;
+    var compressHeight = 500;
+    var compressQuality = 0.8;
+
+    var h5_upload_ops = {
+        init: function () {
+            this.eventBind();
+
+            var errocb = function () {
+                console.log("sth srong");
+            }
+            if (IsPC()) {
+                document.getElementById("imageShow").style.cssText = "";
+                document.getElementById("imageShow").style.cssText = "width:480px;height:360px;margin-left:0px;";
+                openCamrea();
+                $("#startcapture").show();
+                $("#capturing").show();
+            } else {
+                document.getElementById("imageShow").style.cssText = "";
+                document.getElementById("imageShow").style.cssText = "max-width:300px;height:330px;margin-left:0px;";
+                $("#startcapture").hide();
+                $("#capturing").hide();
+            }
+        },
+        eventBind: function () {
+            var that = this;
+            $('.fileinput-button').click(function () {
+                $('#btntxt').html('处理中');
+            });
+            $("#upload").change(function () {
+                document.getElementById("imageShow").style.cssText = "";
+                document.getElementById("imageShow").style.cssText = "max-width:300px;height:330px;margin-left:0px;";
+                //处理IOS 拍照方向
+                document.getElementById("cameraclass").setAttribute("hidden", "hidden");
+                document.getElementById("showclass").removeAttribute("hidden");
+                EXIF.getData(this.files[0], function () {
+                    Orientation = EXIF.getTag(this, 'Orientation');
+                });
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    that.compress(this.result);
+                };
+                reader.readAsDataURL(this.files[0]);
+            });
+
+            var video = document.getElementById("video");
+            var context = canvas.getContext("2d");
+            var errocb = function () {
+                console.log("sth srong");
+            }
+            $("#startcapture").click(function () {
+                document.getElementById("showclass").setAttribute("hidden", "hidden");
+                document.getElementById("cameraclass").removeAttribute("hidden");
+                if (IsPC()) {
+                    document.getElementById("imageShow").style.cssText = "";
+                    document.getElementById("imageShow").style.cssText = "width:480px;height:360px;margin-left:0px;";
+                    openCamrea();
+                    $("#startcapture").show();
+                    $("#capturing").show();
+                } else {
+                    $("#startcapture").hide();
+                    $("#capturing").hide();
+                }
+            });
+            $("#capturing").click(function () {
+                document.getElementById("cameraclass").setAttribute("hidden", "hidden");
+                document.getElementById("showclass").removeAttribute("hidden");
+                $("#capturing").hide();
+                Webcam.snap(function (data_uri) {
+                    that.compress(data_uri);
+                });
+
+                //context.drawImage(video, 0, 0, 480, 360);
+                //that.compress(document.getElementById("canvas").toDataURL("image/jpeg", compressQuality));
+            })
+        },
+        compress: function (res) {
+            var that = this;
+            var img = new Image();
+            img.src = res;
+            img.onload = function () {
+                var expectWidth = img.naturalWidth;
+                var expectHeight = img.naturalHeight;
+                if (img.naturalWidth > img.naturalHeight && img.naturalWidth > compressWidth) {
+                    expectWidth = compressWidth;
+                    expectHeight = expectWidth * img.naturalHeight / img.naturalWidth;
+                } else if (img.naturalHeight > img.naturalWidth && img.naturalHeight > compressHeight) {
+                    expectHeight = compressHeight;
+                    expectWidth = expectHeight * img.naturalWidth / img.naturalHeight;
+                }
+                var cvs = document.createElement('canvas'),
+                    ctx = cvs.getContext('2d');
+
+                //ctx.clearRect(0, 0, cvs.height, cvs.width);
+                if (!IsAndroid() && !IsPC()) {
+                    cvs.width = expectHeight;
+                    cvs.height = expectWidth;
+                    ctx.rotate(1 * 90 * Math.PI / 180);
+                    ctx.drawImage(img, 0, -cvs.width, cvs.height, cvs.width);
+                } else {
+                    cvs.width = expectWidth;
+                    cvs.height = expectHeight;
+                    ctx.drawImage(img, 0, 0, cvs.width, cvs.height);
+                }
+                var base64 = null;
+                base64 = cvs.toDataURL("image/jpeg").substring(23);//这里处理一下base64编码头，以便base64_decode可以解析
+                that.upload(base64);
+            };
+        },
+        upload: function (image_data) {
+            $("#imageShow").attr("src", "data:image/jpeg;base64," + image_data).show();
+            $('#btntxt').html('上传完成');
+        }
+    };
+
+    $(function () {
+        h5_upload_ops.init();
+    });
+    function IsPC() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone",
+                    "SymbianOS", "Windows Phone",
+                    "iPad", "iPod"];
+        var flag = true;
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                flag = false;
+                break;
+            }
+        }
+        return flag;
+    }
+    function IsAndroid() {
+        var userAgentInfo = navigator.userAgent;
+        var Agents = "Android";
+        var flag = false;
+        if (userAgentInfo.indexOf(Agents) >= 0) {
+            flag = true;
+        }
+        return flag;
+    }
+    function openCamrea() {
+        Webcam.set({
+            width: 480,
+            height: 360,
+            image_format: 'jpeg',
+            jpeg_quality: 90
+        });
+        Webcam.attach('#my_camera');
+    }
+
+</script>
