@@ -1,8 +1,3 @@
-/*
-* @Description: Detail, 显示交易详情
-* @Author: John Trump
-* @Created: 2018-04-21 10:46
-*/
 <template>
     <div>
       <div class="select-params">
@@ -109,7 +104,7 @@
             </el-tab-pane>
 
             </el-tabs>
-          </el-tabs>
+          <!-- </el-tabs> -->
         </el-col>
 
         <el-col :span="10" class="el-col">
