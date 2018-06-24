@@ -15,6 +15,7 @@
           <el-option label="STR/BTC" value="STR/BTC"></el-option>
           <el-option label="OMG/BTC" value="OMG/BTC"></el-option>
           <el-option label="LSK/BTC" value="LSK/BTC"></el-option>
+          <el-option label="LSK/BTC" value="LSK/BTC"></el-option>
         </el-select>
         <br>
         <!-- period -->
@@ -185,11 +186,11 @@ const TABLECONFIG = {
   ],
   operations: [],
   data:[{
-    average: 1,
-    portfolio_value: 2,
-    max_drawdown: 3,
-    sharpe_ratio: 4,
-    sortino_ratio: 5
+    average: 1.001778,
+    portfolio_value: 81.334817,
+    max_drawdown: 0.271012,
+    sharpe_ratio: 0.090363,
+    sortino_ratio: 0.103622
   } ]
 };
 const TABLECONFIG2 = {
@@ -222,12 +223,12 @@ const TABLECONFIG2 = {
   ],
   operations: [],
   data: [{
-    negative_day: 1,
-    negative_periods: 2,
-    negative_week: 3,
-    positive_periods: 4,
-    positive_day: 5,
-    positive_week: 6
+    negative_day: 611,
+    negative_periods: 1366,
+    negative_week: 16,
+    positive_periods: 1410,
+    positive_day: 2165,
+    positive_week:2760
   }]
 };
 

@@ -1,8 +1,3 @@
-/*
-* @Description: Candlestick, k线图
-* @Author: John Trump
-* @Created: 2018-04-22 02:34
-*/
 <template>
   <chart :options="chartOptions" ref="chart" auto-resize></chart>
 </template>

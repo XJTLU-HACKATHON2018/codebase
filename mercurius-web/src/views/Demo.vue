@@ -1,8 +1,3 @@
-/*
-* @Description: Demo, put some components' demo
-* @Author: John Trump
-* @Created: 2018-04-21 10:46
-*/
 <template>
   <div class="demo">
 

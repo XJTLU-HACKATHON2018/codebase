@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">HOME</router-link> |
-      <router-link to="/live">Robots Lives</router-link> |
-      <router-link to="/detail">Robots Detail</router-link>
+      | <router-link to="/">HOME</router-link> |
+      <router-link to="/detail">STATUS</router-link> |
+      <router-link to="/team">TEAM</router-link> |
     </div>
     <transition name="myfade" mode="out-in">
       <keep-alive>

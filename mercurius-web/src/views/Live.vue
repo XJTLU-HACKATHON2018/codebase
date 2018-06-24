@@ -1,8 +1,3 @@
-/*
-* @Description: LiveRobots, 自动交易算法列表页面
-* @Author: John Trump
-* @Created: 2018-04-21 15:28
-*/
 <template>
   <div style="padding:0 30px 30px;">
     <grid-table

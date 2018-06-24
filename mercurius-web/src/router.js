@@ -20,6 +20,11 @@ const Detail = resolve => {
   });
 };
 
+const Team = resolve => {
+  import("./views/Team.vue").then(module => {
+    resolve(module);
+  });
+};
 // import Demo from "./views/Demo.vue";
 
 Vue.use(Router);
@@ -45,6 +50,11 @@ export default new Router({
       path: "/about",
       name: "about",
       component: About
+    },
+    {
+      path: "/team",
+      name: "team",
+      component: Team
     },
     {
       path: "/demo",
