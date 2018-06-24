@@ -1,38 +1,69 @@
-# Web Editor of MusicXML Files
-Browser based music score editor with basic MusicXML import/export. Uses Vexflow for music engraving into HTML5 svg element. Provides mouse interactivity for manipulation with musical score.
+# 西交利物浦2018年黑客马拉松
 
-You can see live demo [here](http://freetomik.github.io/).
 
-## Dependencies
-Vexflow, jQuery and Bootstrap
+**请每个队伍，建立自己的项目分支，把代码放在自己分支内，具体操作流程如下**
 
-## Current limitations
-<ul>
-  <li>Missing check if notes fit the bar. Only one note can be added into measure.</li>
-  <li>Minimal subset of MusicXML format supported.</li>
-  <li>Editor works with only first musical part of music score.</li>
-</ul>
+* step 1 安装git在本地
 
-## To Do
-<ol>
-  <li>Duration check for notes in measure - in progress</li>
-  <li>Playback - basics done, improvements needed</li>
-  <li>Bug fixes - in progress</li>
-  <li>Chords support - waiting</li>
-  <li>Keyboard interactivity - waiting</li>
-  <li>Multiple score parts - waiting</li>
-</ol>
+[Git Downloads](https://git-scm.com/downloads)  
 
-## Contribution
-You are welcome to contribute!
 
-Fork, clone, make your feature branch, implement feature, make pull request :-)
+* step 2 初始化git设置
 
-Running project locally:
-Run following command in project directory:
+在命令行下输入自己的名字和邮箱
 ```
-$ python -m SimpleHTTPServer
-```
-Open localhost:8000 in your browser.
+$git config --global user.name "John Doe"
 
-This project was initially created as a bachelor [thesis](https://diplomky.redhat.com/thesis/show/356/web-editor-of-musicxml-files).
+$git config --global user.email johndoe@example.com
+
+$git config --list #检查git的设置
+```
+
+* step 3 clone代码库到本地
+```
+$git clone https://github.com/XJTLU-HACKATHON2018/codebase.git
+```
+
+* step 4 在本地创建自己的版本分支，并切换到自己的分支
+```
+$cd codebase
+
+$git branch your_proejct_name #输入你的项目名称
+
+$git checkout your_proejct_name #输入你的项目名称
+
+$git status #查看当前状态，自己所处的分支
+```
+
+* step 5 拷贝自己的代码到git所在的目录
+```
+把你的工程代码拷贝的当前文件夹
+```
+
+* step 6 提交代码到本地的git
+
+```
+$git status #应该可以看到一堆你刚拷贝过来的文件名，大致样子如下
+Untracked files:
+(use "git add <file>..." to include in what will be committed)
+xxxxx
+
+$git add . #跟踪本地文件
+
+$git status #再次运行, 应该看到如下的一些提示
+Changes to be committed:
+(use "git reset HEAD <file>..." to unstage)
+xxxxx
+
+$git commit -m 'initial push' . #提交本地文件，initial push是提交说明，可以自定义
+
+```
+
+* step 7 映射本地分支到远程分支
+```
+$ git push --set-upstream origin your_branch_name #输入你的分支名
+```
+*此时提示你输入用户名:
+XJTLU-HACKATHON2018(大写)
+再输入密码：
+见群内信息*
