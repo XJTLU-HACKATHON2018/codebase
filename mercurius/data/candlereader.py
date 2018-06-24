@@ -8,6 +8,8 @@ import numpy as np
 import xarray as xr
 #import sqlalchemy
 from datetime import datetime, timedelta
+#import sys
+#import os
 
 
 class CandleReader(object):
@@ -32,13 +34,15 @@ class CandleReader(object):
         self.symbols = symbols
 
 
-    def _to_df(self, ohlcv):
+    def _to_df(self, ohlcv, asset_name):
         #index = pd.Series(np.arange(start, end, interval), name='openTime')
         #init_chart = pd.DataFrame(np.nan, index=index, columns
         df = pd.DataFrame(
             ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
         df['openTime'] = pd.to_datetime(df.timestamp / 1e3, unit='s')
         df.index = pd.DatetimeIndex(df['openTime']).round('S')
+        #path = os.path.split(os.path.abspath(sys.argv[0]))[0] + '/'
+        df.to_csv(str(self.start/1e3)+'-'+asset_name[0:3]+".csv", index=False)
         df = df.drop(columns=['openTime','timestamp'])
         return df
 
@@ -57,7 +61,7 @@ class CandleReader(object):
 
         for symbol in self.symbols:
             ohlcv = self.exchange.fetch_ohlcv(symbol, self.timeframe, self.start, num_candles)
-            raw_data_dict[symbol] = self._to_df(ohlcv)
+            raw_data_dict[symbol] = self._to_df(ohlcv, symbol)
 
         chart = xr.DataArray(pd.Panel(raw_data_dict, dtype=np.float32), dims=["asset", "openTime", "feature"])
         return chart.transpose("feature", "asset", "openTime")
@@ -77,15 +81,19 @@ class CandleReader(object):
 if __name__ == "__main__":
     from mercurius.strategy import olmar
     exchange = ccxt.poloniex()
-    symbols = ['ETH/BTC', 'ETC/BTC']
+    assets = ['ETH', 'LTC', 'XRP', 'ETC', 'DASH', 'XMR', 'XEM', 'FCT', 'GNT', 'ZEC']
+    symbols = [ x + '/BTC' for x in assets]
+
     #symbol = 'ETH/BTC'
 
     #index = 4
     #length = 80
     #heigh = 15
-    #timeframe = '15m'
+    #timeframe = '30m'
     #start = exchange.parse8601('2017-10-15 00:00:00')
     #end = exchange.parse8601('2017-10-25 00:00:00')
+    start = '2018-02-22 00:00:00'
+    end = '2018-06-22 00:00:00'
 
     # print(type(start))
     # print(end)
@@ -96,8 +104,8 @@ if __name__ == "__main__":
 
     #testdr = CandleReader(symbols, '2017-10-15 00:00:00',
     #                    '2017-10-25 00:00:00', '15m', 'poloniex')
-    testdr = CandleReader(symbols, '2017-04-22 00:00:00', '2018-04-22 00:00:00', '15m', 'poloniex').get_data()
-    close_data = CandleReader(symbols, '2017-04-22 00:00:00', '2018-04-22 00:00:00', '15m', 'poloniex').get_close()
+    testdr = CandleReader(symbols, start, end, '30m', 'poloniex').get_data()
+    close_data = CandleReader(symbols, start, end, '30m', 'poloniex').get_close()
 
     print(close_data.shape)
 
