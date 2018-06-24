@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: android-extend-release:@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/android-extend-release.aar/21b65e3df60fd9c5819ac215448fffdd/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/android-extend-release.aar/21b65e3df60fd9c5819ac215448fffdd/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
