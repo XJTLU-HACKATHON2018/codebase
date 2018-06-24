@@ -89,7 +89,7 @@
                   :selection="TABLECONFIG.selection"
                   :columns="TABLECONFIG.columns"
                   :operations="TABLECONFIG.operations"
-                  :tableData="tableData"
+                  :tableData="TABLECONFIG.data"
                 ></grid-table>
               </div>
             </el-tab-pane>
@@ -99,7 +99,7 @@
                   :selection="TABLECONFIG2.selection"
                   :columns="TABLECONFIG2.columns"
                   :operations="TABLECONFIG2.operations"
-                  :tableData="tableData"
+                  :tableData="TABLECONFIG2.data"
                 ></grid-table>
             </el-tab-pane>
 
@@ -164,7 +164,7 @@ const TABLECONFIG = {
   columns: [
     {
       label: "average",
-      dataIndex: "average"
+      dataIndex: "average",
     },
     {
       label: "portfolio value",
@@ -183,7 +183,14 @@ const TABLECONFIG = {
       dataIndex: "sortino_ratio"
     }
   ],
-  operations: []
+  operations: [],
+  data:[{
+    average: 1,
+    portfolio_value: 2,
+    max_drawdown: 3,
+    sharpe_ratio: 4,
+    sortino_ratio: 5
+  } ]
 };
 const TABLECONFIG2 = {
   selection: false,
@@ -205,15 +212,23 @@ const TABLECONFIG2 = {
       dataIndex: "positive_periods"
     },
     {
-      label: "postive day",
-      dataIndex: "postive_day"
+      label: "positive day",
+      dataIndex: "positive_day"
     },
     {
-      label: "postive week",
-      dataIndex: "postive_week"
+      label: "positive week",
+      dataIndex: "positive_week"
     }
   ],
-  operations: []
+  operations: [],
+  data: [{
+    negative_day: 1,
+    negative_periods: 2,
+    negative_week: 3,
+    positive_periods: 4,
+    positive_day: 5,
+    positive_week: 6
+  }]
 };
 
 export default {
